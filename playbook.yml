@@ -1,0 +1,21 @@
+- hosts: all
+  remote_user: opc
+  become: yes
+  handlers:
+    - name: reload sshd
+      service:
+        name: sshd
+        state: reloaded
+  tasks:
+    - name: enable PasswordAuthentication
+      replace:
+        dest: /etc/ssh/sshd_config
+        regexp: '.*(PasswordAuthentication.*no)'
+        replace: '\0Pass
+        wordAuthentication yes'
+      notify: reload sshd
+    - name: set opc password
+      user:
+        name: opc
+        password: "$6$2i.o.IBhdcUH$BsyrJTmibPUbPsiIIOt7RmMsbT3R8JbH2bjJNK4/Ku58qpuq1BGWQ6Lubp/PDzUS.J8HcgIUb0RjbS3GAxP0I0"
+        
